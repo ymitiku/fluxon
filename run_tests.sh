@@ -8,7 +8,7 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
-# CONDA_DEFAULT_ENV=fluxion-env
+CONDA_DEFAULT_ENV=fluxon-env
 
 # Helper function for printing a status message
 print_status() {
@@ -20,23 +20,23 @@ echo -e "${GREEN}=================================="
 echo -e "Running Fluxion Tests"
 echo -e "==================================${NC}"
 
-# # Check for conda environment
-# if ! command -v conda &> /dev/null; then
-#     echo -e "${RED}[ERROR] Conda not found! Please install Anaconda or Miniconda.${NC}"
-#     exit 1
-# else 
-#     print_status "Conda is installed"
-#     print_status "Activating Conda environment: $CONDA_DEFAULT_ENV"
-#     source activate $CONDA_DEFAULT_ENV
-# fi
+# Check for conda environment
+if ! command -v conda &> /dev/null; then
+    echo -e "${RED}[ERROR] Conda not found! Please install Anaconda or Miniconda.${NC}"
+    exit 1
+else 
+    print_status "Conda is installed"
+    print_status "Activating Conda environment: $CONDA_DEFAULT_ENV"
+    source activate $CONDA_DEFAULT_ENV
+fi
 
-# # Check if an environment is activated
-# if [ -z "$CONDA_DEFAULT_ENV" ]; then
-#     echo -e "${RED}[ERROR] No Conda environment is active! Activate an environment and try again.${NC}"
-#     exit 1
-# else
-#     print_status "Using Conda environment: $CONDA_DEFAULT_ENV"
-# fi
+# Check if an environment is activated
+if [ -z "$CONDA_DEFAULT_ENV" ]; then
+    echo -e "${RED}[ERROR] No Conda environment is active! Activate an environment and try again.${NC}"
+    exit 1
+else
+    print_status "Using Conda environment: $CONDA_DEFAULT_ENV"
+fi
 
 # Check for pytest installation
 if ! python -c "import pytest" &> /dev/null; then

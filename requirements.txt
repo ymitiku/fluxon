@@ -1,3 +1,7 @@
 jsonschema>=4.0.0  # For JSON Schema validation
 pydantic>=1.10.0   # For schema generation and validation
 bump2version>=1.0.1
+xmltodict==0.14.2
+jsonschema==4.23.0
+pydantic==2.10.4
+pyyaml==6.0.2
