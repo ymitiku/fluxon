@@ -50,7 +50,7 @@ git push origin --tags $new_version
 git push origin main
 
 # Create release
-gh release create v0.0.3 --target main --title v0.0.3 --notes "Release v0.0.3"
+gh release create $new_version --target main --title $new_version --notes "Release $new_version"
 
 # Build and upload to PyPI
 python setup.py sdist bdist_wheel
