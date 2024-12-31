@@ -18,6 +18,9 @@ echo "New version: $new_version"
 git push --tags $new_version
 git push origin main
 
+# Create release
+gh release create $new_version --target main --title $new_version --notes "Release $new_version"
+
 # Build and upload to PyPI
 python setup.py sdist bdist_wheel
 twine upload dist/*
