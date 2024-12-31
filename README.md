@@ -1,4 +1,4 @@
-# Fluxon version 0.0.2
+# Fluxon version 0.0.3"
 
 **Pronunciation**: *Fluhk-sawn*
 
