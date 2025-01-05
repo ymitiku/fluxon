@@ -148,6 +148,16 @@ def extract_json_from_text(input_text: str, start_tag: str = "BEGIN_JSON", end_t
     Returns:
         str: Extracted JSON string or an empty string if no valid JSON is found.
     """
+    if start_tag not in input_text and end_tag not in input_text:
+        return input_text # No JSON tags found, return the original text
+    elif start_tag not in input_text:
+        end_pos = input_text.index(end_tag)
+        return input_text[:end_pos].strip()
+    elif end_tag not in input_text:
+        start_pos = input_text.index(start_tag) + len(start_tag)
+        return input_text[start_pos:].strip()
+    
+
     match = re.search(fr"{start_tag}(.*?){end_tag}", input_text, re.DOTALL)
     if match:
         return match.group(1).strip()
