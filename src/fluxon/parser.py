@@ -19,8 +19,7 @@ def parse_json_with_recovery(json_str: str) -> dict:
     except JSONDecodeError as e:
         print(f"Initial parsing failed: {e}")
         # Step 1: Remove any extraneous content (non-JSON)
-        json_str = trim_to_json(json_str)
-        
+        json_str = clean_raw_json(json_str)
         # Step 2: Fix common errors
         json_str = fix_common_json_errors(json_str)
 
@@ -149,6 +148,16 @@ def extract_json_from_text(input_text: str, start_tag: str = "BEGIN_JSON", end_t
     Returns:
         str: Extracted JSON string or an empty string if no valid JSON is found.
     """
+    if start_tag not in input_text and end_tag not in input_text:
+        return input_text # No JSON tags found, return the original text
+    elif start_tag not in input_text:
+        end_pos = input_text.index(end_tag)
+        return input_text[:end_pos].strip()
+    elif end_tag not in input_text:
+        start_pos = input_text.index(start_tag) + len(start_tag)
+        return input_text[start_pos:].strip()
+    
+
     match = re.search(fr"{start_tag}(.*?){end_tag}", input_text, re.DOTALL)
     if match:
         return match.group(1).strip()
@@ -170,7 +179,7 @@ def remove_comments(json_text: str) -> str:
     json_text = re.sub(r'/\*.*?\*/', '', json_text, flags=re.DOTALL)
     return json_text
 
-def clean_llm_output(input_text: str) -> str:
+def clean_raw_json(input_text: str) -> str:
     """
     Cleans LLM output by extracting JSON content and removing comments.
 
@@ -183,4 +192,5 @@ def clean_llm_output(input_text: str) -> str:
     json_content = extract_json_from_text(input_text)
     if json_content:
         json_content = remove_comments(json_content)
+    json_content = trim_to_json(json_content)
     return normalize_json(json_content)

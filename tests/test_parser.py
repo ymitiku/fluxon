@@ -7,7 +7,7 @@ from fluxon.parser import (
     fix_common_json_errors,
     extract_json_from_text,
     remove_comments,
-    clean_llm_output
+    clean_raw_json
 )
 from fluxon.utils import normalize_json
 
@@ -71,7 +71,7 @@ class TestParser(unittest.TestCase):
         result = remove_comments(input_json)
         self.assertEqual(result.strip(), expected_output.strip())
 
-    def test_clean_llm_output(self):
+    def test_clean_raw_json(self):
         input_text = """
         BEGIN_JSON
         {
@@ -82,7 +82,7 @@ class TestParser(unittest.TestCase):
         """
         expected_output = normalize_json('{"name": "Alice", "age": 25}')
     
-        result = clean_llm_output(input_text)
+        result = clean_raw_json(input_text)
         print("Expected:", expected_output)
         print("Result:", result)
         self.assertEqual(result, expected_output)

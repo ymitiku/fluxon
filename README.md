@@ -74,7 +74,7 @@ END_JSON
 Use Fluxon to clean and parse LLM outputs:
 
 ```python
-from fluxon.parser import clean_llm_output, parse_json_with_recovery
+from fluxon.parser import parse_json_with_recovery
 
 llm_output = """
 BEGIN_JSON
@@ -87,7 +87,6 @@ END_JSON
 """
 
 # Step 1: Clean the LLM output
-cleaned_output = clean_llm_output(llm_output)
 
 # Step 2: Parse and recover JSON
 parsed_json = parse_json_with_recovery(cleaned_output)
