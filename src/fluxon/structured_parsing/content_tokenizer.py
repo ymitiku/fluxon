@@ -1,0 +1,71 @@
+import re
+
+
+class ContentTokenizer:
+    """ Tokenizes mixed content containing free text and JSON objects. """
+    TOKEN_PATTERNS = {
+        "free_text": r'[^{}]+',  # Matches free text (avoids overlapping with JSON objects)
+    }
+
+    def __init__(self):
+        self.tokens = []
+
+    def extract_nested_json(self, input_text: str):
+        """
+        Extracts the first nested JSON object from the input text.
+
+        Args:
+            input_text (str): The text containing JSON objects.
+
+        Returns:
+            tuple: A tuple (json_object, remaining_text) where json_object is the matched JSON
+                   and remaining_text is the text after the JSON object.
+        """
+        stack = []
+        json_start = None
+
+        for i, char in enumerate(input_text):
+            if char == '{':
+                if not stack:
+                    json_start = i  # Mark the start of the JSON object
+                stack.append(char)
+            elif char == '}':
+                stack.pop()
+                if not stack:  # Found the matching closing brace
+                    return input_text[json_start:i + 1], input_text[i + 1:]
+
+        return None, input_text  # No valid JSON found
+
+    def tokenize(self, input_text: str) -> list:
+        """
+        Tokenizes the input text into free text and JSON objects.
+
+        Args:
+            input_text (str): The input containing mixed content.
+
+        Returns:
+            list: A list of tokens with their types.
+        """
+        self.tokens = []
+
+        while input_text:
+            input_text = input_text.strip()
+
+            # Extract JSON object if it starts with '{'
+            if input_text.startswith('{'):
+                json_object, input_text = self.extract_nested_json(input_text)
+                if json_object:
+                    self.tokens.append({"type": "json_object", "value": json_object})
+                else:
+                    raise ValueError("Malformed JSON detected")
+
+            # Extract free text
+            else:
+                match = re.match(self.TOKEN_PATTERNS["free_text"], input_text)
+                if match:
+                    self.tokens.append({"type": "free_text", "value": match.group(0).strip()})
+                    input_text = input_text[match.end():]
+                else:
+                    raise ValueError(f"Unrecognized input: {input_text[:30]}")
+
+        return self.tokens
