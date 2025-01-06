@@ -1,5 +1,6 @@
 import unittest
 from fluxon.structured_parsing.content_tokenizer import ContentTokenizer
+from fluxon.structured_parsing.exceptions import MalformedJsonError
 
 
 class TestContentTokenizer(unittest.TestCase):
@@ -29,5 +30,5 @@ class TestContentTokenizer(unittest.TestCase):
 
     def test_malformed_json(self):
         input_text = "{This is not valid JSON"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(MalformedJsonError):
             self.tokenizer.tokenize(input_text)

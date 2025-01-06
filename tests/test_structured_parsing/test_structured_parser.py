@@ -1,5 +1,5 @@
 import unittest
-from fluxon.structured_parsing.structured_parser import FluxonStructuredParser
+from fluxon.structured_parsing.fluxon_structured_parser import FluxonStructuredParser
 from fluxon.utils import normalize_json
 
 

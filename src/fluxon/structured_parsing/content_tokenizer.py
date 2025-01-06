@@ -1,4 +1,5 @@
 import re
+from fluxon.structured_parsing.exceptions import UnRecognizedInputFormatError, MalformedJsonError
 
 
 class ContentTokenizer:
@@ -57,7 +58,7 @@ class ContentTokenizer:
                 if json_object:
                     self.tokens.append({"type": "json_object", "value": json_object})
                 else:
-                    raise ValueError("Malformed JSON detected")
+                    raise MalformedJsonError("Malformed JSON detected")
 
             # Extract free text
             else:
@@ -66,6 +67,6 @@ class ContentTokenizer:
                     self.tokens.append({"type": "free_text", "value": match.group(0).strip()})
                     input_text = input_text[match.end():]
                 else:
-                    raise ValueError(f"Unrecognized input: {input_text[:30]}")
+                    raise UnRecognizedInputFormatError(f"Unrecognized input: {input_text[:30]}")
 
         return self.tokens

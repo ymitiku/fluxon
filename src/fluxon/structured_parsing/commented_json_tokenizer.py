@@ -1,4 +1,4 @@
-
+from fluxon.structured_parsing.exceptions import UnExpectedCharacterError, MalformedJsonError
 
 class CommentedJsonTokenizer:
     """ Tokenizes and renders JSON-like content. """
@@ -64,7 +64,7 @@ class CommentedJsonTokenizer:
             # Unexpected character
             else:
 
-                raise ValueError(f"Unexpected character at position {i}: {char}")
+                raise UnExpectedCharacterError(f"Unexpected character at position {i}: {char}")
 
         return self.tokens
 
@@ -85,7 +85,7 @@ class CommentedJsonTokenizer:
         key = input_text[start + 1:end]
         colon_pos = input_text.find(':', end)
         if colon_pos == -1:
-            raise ValueError("Missing colon after key")
+            raise UnExpectedCharacterError("Missing colon after key")
         return key, colon_pos + 1
 
     def look_ahead_remove_whitespace(self, input_text: str, start: int) -> int:
@@ -193,7 +193,7 @@ class CommentedJsonTokenizer:
             print("stack", stack)
             print("i", i)
             print("input_text", input_text)
-            raise ValueError("Unmatched braces or brackets in nested structure")
+            raise MalformedJsonError("Unmatched braces or brackets in nested structure")
         return input_text[start:i], i
 
     def extract_inline_comment(self, input_text: str, start: int) -> tuple:
@@ -257,7 +257,7 @@ class CommentedJsonTokenizer:
             elif char == '"':
                 end = array_content.find('"', i + 1)
                 if end == -1:
-                    raise ValueError("Unterminated string in array")
+                    raise MalformedJsonError("Unterminated string in array")
                 elements.append({"type": "string", "value": array_content[i + 1:end], "value_type": "string"})
                 i = end + 1
             elif char not in ", \t\n":

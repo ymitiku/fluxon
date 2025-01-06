@@ -35,7 +35,7 @@ pip install fluxon
 Parse mixed content containing JSON-like structures and render it flexibly:
 
 ```python
-from fluxon.structured_parsing.structured_parser import FluxonStructuredParser
+from fluxon.structured_parsing.fluxon_structured_parser import FluxonStructuredParser
 
 input_text = """
 This is some free text before the JSON.
