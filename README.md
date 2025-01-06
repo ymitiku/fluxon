@@ -1,8 +1,16 @@
-# Fluxon version 0.0.5"""
+### **Updated README**
+
+Below is the updated README incorporating the new functionality related to **structured parsing** and **rendering**:
+
+---
+
+# Fluxon
 
 **Pronunciation**: *Fluhk-sawn*
 
-Fluxon is a Python library designed for crafting structured prompts and parsing structured outputs, with a primary focus on JSON. Fluxon bridges the gap between human-readable prompts and machine-readable structured data, enabling seamless interaction with large language models (LLMs). It ensures robust error recovery, validation, and the generation of well-structured prompts tailored to LLMs.
+Fluxon is a Python library designed for crafting structured prompts, parsing structured outputs, and rendering JSON-like content with advanced formatting and comment handling. Fluxon bridges the gap between human-readable prompts and machine-readable structured data, enabling seamless interaction with large language models (LLMs). It ensures robust error recovery, validation, and the generation of well-structured prompts tailored to LLMs.
+
+---
 
 ## Features
 
@@ -10,8 +18,11 @@ Fluxon is a Python library designed for crafting structured prompts and parsing 
 - **Schema-Driven Parsing**: Validates and parses outputs with tools like YAML, JSON Schema, or Pydantic classes.
 - **Error-Tolerant Parsing**: Repairs common JSON issues such as missing commas, invalid formatting, and unquoted keys.
 - **Comprehensive Validation**: Ensures outputs conform to expected structures using schema validation.
-- **Preprocessing Tools**: Cleans LLM-generated outputs by removing comments and isolating JSON content.
+- **Flexible Rendering**: Renders parsed tokens with customizable formatting (e.g., compact or pretty-printed styles) and comment placement (inline or above).
+- **Mixed Content Parsing**: Separates free text from embedded JSON objects and tokenizes them for advanced workflows.
 - **Lightweight and Modular Design**: Optimized for Python-based workflows.
+
+---
 
 ## Installation
 
@@ -21,9 +32,72 @@ To install Fluxon, use pip:
 pip install fluxon
 ```
 
+---
+
 ## Usage
 
-### 1. Prompt Formatting
+### 1. Structured Parsing and Rendering
+
+Parse mixed content containing JSON-like structures and render it flexibly:
+
+```python
+from fluxon.structured_parsing.structured_parser import FluxonStructuredParser
+
+input_text = """
+This is some free text before the JSON.
+{
+    "key1": "value1", // Inline comment for key1
+    "key2": { 
+        "nestedKey1": "nestedValue1", /* Block comment */
+        "nestedKey2": ["arrayValue1", 123, {"deepKey": "deepValue"}]
+    },
+    "key3": "value3"
+}
+More free text after the JSON.
+"""
+
+parser = FluxonStructuredParser()
+
+# Parse the input text
+parsed_output = parser.parse(input_text)
+
+# Render the parsed output
+pretty_rendered = parser.render(parsed_output, compact=False)
+compact_rendered = parser.render(parsed_output, compact=True)
+
+print("Pretty Rendered JSON:")
+print(pretty_rendered)
+
+print("Compact Rendered JSON:")
+print(compact_rendered)
+```
+
+#### Output:
+
+**Pretty Rendered JSON**:
+
+```json
+This is some free text before the JSON.
+{
+    "key1": "value1" // Inline comment for key1,
+    "key2": {
+        "nestedKey1": "nestedValue1" /* Block comment */,
+        "nestedKey2": ["arrayValue1", 123, {"deepKey": "deepValue"}]
+    },
+    "key3": "value3"
+}
+More free text after the JSON.
+```
+
+**Compact Rendered JSON**:
+
+```json
+{"key1":"value1","key2":{"nestedKey1":"nestedValue1","nestedKey2":["arrayValue1",123,{"deepKey":"deepValue"}]},"key3":"value3"}
+```
+
+---
+
+### 2. Prompt Formatting
 
 Create structured prompts to guide LLMs:
 
@@ -69,7 +143,9 @@ BEGIN_JSON
 END_JSON
 ```
 
-### 2. Parsing and Error Recovery
+---
+
+### 3. Parsing and Error Recovery
 
 Use Fluxon to clean and parse LLM outputs:
 
@@ -103,7 +179,9 @@ print("Parsed JSON:", parsed_json)
 }
 ```
 
-### 3. Validation and Repair
+---
+
+### 4. Validation and Repair
 
 Validate or repair JSON outputs using schemas:
 
@@ -137,9 +215,13 @@ Is valid: False
 Repaired JSON: {"name": "Alice", "age": 30}
 ```
 
+---
+
 ## Contributing
 
 Contributions are welcome! Please submit pull requests or report issues on the [GitHub repository](https://github.com/ymitiku/fluxon).
+
+---
 
 ## License
 
@@ -147,5 +229,5 @@ Fluxon is licensed under the [Apache License 2.0](LICENSE).
 
 ---
 
-Start building error-resilient, structured workflows with Fluxon today!
+Start building error-resilient, structured workflows with Fluxon today! 🚀
 
