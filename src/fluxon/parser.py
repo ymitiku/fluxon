@@ -103,7 +103,23 @@ def add_missing_commas_in_arrays(json_str: str) -> str:
     
     return fixed_json
 
+def add_missing_brackets(json_str: str) -> str:
+    """
+    Adds missing brackets to JSON strings. This function assumes that the JSON string is a dictionary.
 
+    Args:
+        json_str (str): The JSON string with potential missing brackets.
+
+    Returns:
+        str: A JSON string with added brackets.
+    """
+
+    if not json_str.strip().startswith("{"):
+        json_str = "{" + json_str
+    if not json_str.strip().endswith("}"):
+        json_str = json_str + "}"
+    return json_str
+    
 
 def fix_common_json_errors(json_str: str) -> str:
     """
@@ -130,6 +146,8 @@ def fix_common_json_errors(json_str: str) -> str:
         r'\1 "\2":', 
         json_str
     )
+    
+    json_str = add_missing_brackets(json_str)
 
     return json_str
 

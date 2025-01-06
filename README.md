@@ -1,4 +1,4 @@
-# Fluxon v0.0.6
+# Fluxon v0.0.7
 
 **Pronunciation**: *Fluhk-sawn*
 
