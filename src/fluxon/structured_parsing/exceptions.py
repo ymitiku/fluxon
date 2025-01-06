@@ -1,5 +1,13 @@
 
-class UnRecognizedInputFormatError(Exception):
+class FluxonError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
+class UnRecognizedInputFormatError(FluxonError):
     def __init__(self, message):
         self.message = message
 
@@ -8,7 +16,7 @@ class UnRecognizedInputFormatError(Exception):
     
 
 
-class MalformedJsonError(Exception):
+class MalformedJsonError(FluxonError):
     def __init__(self, message):
         self.message = message
 
@@ -16,7 +24,7 @@ class MalformedJsonError(Exception):
         return self.message
     
 
-class UnExpectedCharacterError(Exception):
+class UnExpectedCharacterError(FluxonError):
     def __init__(self, message):
         self.message = message
 
