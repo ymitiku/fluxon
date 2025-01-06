@@ -1,9 +1,3 @@
-### **Updated README**
-
-Below is the updated README incorporating the new functionality related to **structured parsing** and **rendering**:
-
----
-
 # Fluxon
 
 **Pronunciation**: *Fluhk-sawn*
