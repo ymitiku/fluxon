@@ -54,7 +54,7 @@ class FluxonStructuredParser:
                 output += current_output + "\n"
         return output
     
-    def get_json_objects(self, parsed_output):
+    def get_json_objects(self, parsed_output, num_objects=None):
         """
         Extracts the JSON objects from the parsed output.
 
@@ -66,11 +66,13 @@ class FluxonStructuredParser:
         """
         json_objects = []
         for segment in parsed_output:
+            if num_objects and len(json_objects) >= num_objects:
+                break
             if segment["type"] == CommentedJsonPartTypes.JSON_OBJECT:
                 json_objects.append(segment["value"])
         return json_objects
     
-    def get_sorted_json_objects(self, parsed_output):
+    def get_sorted_json_objects(self, parsed_output, num_objects=None, ascending=True):
         """
         Extracts the JSON objects from the parsed output and sorts them by the number of keys.
 
@@ -81,7 +83,7 @@ class FluxonStructuredParser:
             list: A list of JSON objects sorted by the number of keys.
         """
         json_objects = self.get_json_objects(parsed_output)
-        return sorted(json_objects, key=lambda x: len(x["keys"]))
+        return sorted(json_objects, key=lambda x: len(x), reverse=not ascending)[:num_objects]
     
 
 
