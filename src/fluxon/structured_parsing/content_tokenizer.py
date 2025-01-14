@@ -1,5 +1,17 @@
 import re
+from enum import Enum
 from fluxon.structured_parsing.exceptions import UnRecognizedInputFormatError, MalformedJsonError
+
+
+
+class CommentedJsonPartTypes(Enum):
+    FREE_TEXT = "free_text"
+    JSON_OBJECT = "json_object"
+
+class CommentedJsonPart:
+    def __init__(self, part_type: CommentedJsonPartTypes, value: str):
+        self.part_type = part_type
+        self.value = value
 
 
 class ContentTokenizer:
@@ -56,7 +68,7 @@ class ContentTokenizer:
             if input_text.startswith('{'):
                 json_object, input_text = self.extract_nested_json(input_text)
                 if json_object:
-                    self.tokens.append({"type": "json_object", "value": json_object})
+                    self.tokens.append({"type": CommentedJsonPartTypes.JSON_OBJECT, "value": json_object})
                 else:
                     raise MalformedJsonError("Malformed JSON detected")
 
@@ -64,7 +76,7 @@ class ContentTokenizer:
             else:
                 match = re.match(self.TOKEN_PATTERNS["free_text"], input_text)
                 if match:
-                    self.tokens.append({"type": "free_text", "value": match.group(0).strip()})
+                    self.tokens.append({"type": CommentedJsonPartTypes.FREE_TEXT, "value": match.group(0).strip()})
                     input_text = input_text[match.end():]
                 else:
                     raise UnRecognizedInputFormatError(f"Unrecognized input: {input_text[:30]}")
