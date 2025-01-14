@@ -82,7 +82,7 @@ class FluxonStructuredParser:
         Returns:
             list: A list of JSON objects sorted by the number of keys.
         """
-        json_objects = self.get_json_objects(parsed_output)
+        json_objects = self.get_json_objects(parsed_output, num_objects)
         return sorted(json_objects, key=lambda x: len(x), reverse=not ascending)[:num_objects]
     
 
