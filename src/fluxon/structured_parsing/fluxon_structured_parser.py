@@ -1,5 +1,9 @@
+from enum import Enum
 from fluxon.structured_parsing.commented_json_tokenizer import CommentedJsonTokenizer
-from fluxon.structured_parsing.content_tokenizer import ContentTokenizer
+from fluxon.structured_parsing.content_tokenizer import ContentTokenizer, CommentedJsonPartTypes, CommentedJsonPart
+
+
+    
 
 class FluxonStructuredParser:
     def __init__(self):
@@ -20,12 +24,13 @@ class FluxonStructuredParser:
         outer_tokens = self.content_tokenizer.tokenize(input_text)
 
         for token in outer_tokens:
-            if token["type"] == "free_text":
-                parsed_output.append({"type": "free_text", "value": token["value"]})
-            elif token["type"] == "json_object":
+            if token["type"] == CommentedJsonPartTypes.FREE_TEXT:
+                parsed_output.append({"type":  CommentedJsonPartTypes.FREE_TEXT, "value": token["value"]})
+            elif token["type"] == CommentedJsonPartTypes.JSON_OBJECT:
                 # Pass the JSON object value to InnerTokenizer for detailed parsing
                 inner_tokens = self.commented_json_tokenizer.tokenize(token["value"])
-                parsed_output.append({"type": "json_object", "value": inner_tokens})
+                parsed_output.append({"type": CommentedJsonPartTypes.JSON_OBJECT, "value": inner_tokens})
+            
 
         return parsed_output
     
@@ -42,12 +47,41 @@ class FluxonStructuredParser:
         """
         output = ""
         for segment in parsed_output:
-            if segment["type"] == "free_text" and not compact:
+            if segment["type"] == CommentedJsonPartTypes.FREE_TEXT and not compact:
                 output += segment["value"] + "\n"
-            elif segment["type"] == "json_object":
+            elif segment["type"] == CommentedJsonPartTypes.JSON_OBJECT:
                 current_output = self.commented_json_tokenizer.render(segment["value"], compact = compact)
                 output += current_output + "\n"
         return output
+    
+    def get_json_objects(self, parsed_output):
+        """
+        Extracts the JSON objects from the parsed output.
+
+        Args:
+            parsed_output (list): The parsed output from the parse method.
+
+        Returns:
+            list: A list of JSON objects.
+        """
+        json_objects = []
+        for segment in parsed_output:
+            if segment["type"] == CommentedJsonPartTypes.JSON_OBJECT:
+                json_objects.append(segment["value"])
+        return json_objects
+    
+    def get_sorted_json_objects(self, parsed_output):
+        """
+        Extracts the JSON objects from the parsed output and sorts them by the number of keys.
+
+        Args:
+            parsed_output (list): The parsed output from the parse method.
+
+        Returns:
+            list: A list of JSON objects sorted by the number of keys.
+        """
+        json_objects = self.get_json_objects(parsed_output)
+        return sorted(json_objects, key=lambda x: len(x["keys"]))
     
 
 
